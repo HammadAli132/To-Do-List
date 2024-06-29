@@ -13,10 +13,12 @@
     --hover-color: rgb(188, 188, 188);
     --primary-text-color: rgb(20, 20, 20);
     --secondar-text-color: rgb(60, 60, 60);
+    --btn-color: rgb(69, 212, 203);
 }
 
 body {
     padding: 10px;
+    overflow-x: hidden;
 }
 
 /* Header Stylings */
@@ -37,6 +39,7 @@ header {
 main {
     display: grid;
     grid-template-columns: minmax(250px, 350px) 1fr;
+    position: relative;
 }
 
 /* Menu Styling */
@@ -67,11 +70,11 @@ main {
     flex-direction: column;
 }
 
-#menu-title, #project-title, .menu-subtitle {
+#menu-title, #project-title, .menu-subtitle, .form-heading {
     border-bottom: 1px solid var(--hover-color);
 }
 
-#menu-title, #project-title {
+#menu-title, #project-title, .form-heading {
     font-size: 1.75rem;
     font-weight: 700;
     padding: 10px;
@@ -126,7 +129,7 @@ main {
     background-color: white;
 }
 
-.project-name, .task-desc {
+.project-name {
     text-overflow: ellipsis;
     text-wrap: nowrap;
     overflow: hidden;
@@ -158,7 +161,7 @@ main {
     position: relative;
 }
 
-.task:hover {
+.task:hover, .submit-btn:hover, .cancel-btn:hover {
     transform: translateY(-3px);
     cursor: pointer;
     box-shadow: 2px 2px 5px var(--hover-color);
@@ -200,12 +203,102 @@ main {
 
 .task-delete {
     border-radius: 5px;
-    height: 20px;
-    width: 15px;
-    background: url(./assets/bin.png) center center/cover no-repeat;
+    height: 25px;
+    width: 25px;
     padding: 5px;
 }
 
 .task-delete:hover {
     background-color: var(--hover-color);
+}
+
+/* Info Input Section Styling */
+
+#info-input-sec {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    min-height: auto;
+    position: absolute;
+    top: 0;
+    right: -500px;
+    transition: all .5s ease-out;
+}
+
+#project-info, #task-info {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+}
+
+#project-info {
+    display: none;
+}
+
+.form {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+    width: 100%;
+}
+
+.label {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--secondar-text-color);
+    text-decoration: underline;
+    /* margin-top: 5px; */
+}
+
+form input, textarea {
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    font-size: 1rem;
+}
+
+form input:focus, textarea:focus {
+    border: none;
+    outline: none;
+}
+
+form input[type='color'] {
+    background-color: white;
+}
+
+.form-btn, #priorities {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 20px;
+}
+
+.submit-btn, .cancel-btn {
+    width: 100px;
+    transition: all .3s;
+    margin-top: 20px;
+}
+
+.submit-btn {
+    background-color: var(--btn-color);
+}
+
+#h, #m, #l {
+    font-size: 1rem;
+}
+
+#h {
+    color: red;
+}
+
+#m {
+    color: orange;
+}
+
+#l {
+    color: green;
 }

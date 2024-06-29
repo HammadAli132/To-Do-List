@@ -1,6 +1,6 @@
 import getProjectSection from "./projectSection";
 import getChecklistSection from "./checklistSection";
-
+import { getForms, addFormFunctionality } from "./forms";
 
 function loadMenu() {
     const menu = document.createElement('div');
@@ -11,11 +11,14 @@ function loadMenu() {
     menuTitle.innerText = "Menu";
     menu.appendChild(menuTitle);
     
-    // const projectSection = getProjectSection();
-    // menu.appendChild(projectSection);
+    const projectSection = getProjectSection();
+    menu.appendChild(projectSection);
 
-    // const checklistSection = getChecklistSection();
-    // menu.appendChild(checklistSection);
+    const checklistSection = getChecklistSection();
+    menu.appendChild(checklistSection);
+
+    const forms = getForms();
+    menu.appendChild(forms);
 
     return menu;
 };
