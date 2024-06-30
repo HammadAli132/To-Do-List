@@ -135,10 +135,6 @@ main {
     overflow: hidden;
 }
 
-.project-bar {
-    border-left: 3px solid var(--primary-text-color);
-}
-
 /* Task Section Styling */
 
 #tasks-section {

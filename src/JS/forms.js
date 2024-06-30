@@ -1,26 +1,3 @@
-function addFormFunctionality() {
-    const formsDiv = document.getElementById('info-input-sec');
-    
-    const forms = document.querySelectorAll('.form');
-    forms.forEach(form => {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const inputFields = document.querySelectorAll('.form > input');
-            inputFields.forEach(input => {
-                input.value = "";
-            });
-            formsDiv.style.right = "-500px";
-        });
-    });
-
-    const cancel = document.querySelectorAll('.cancel-btn');
-    cancel.forEach(cancelBtn => {
-        cancelBtn.addEventListener('click', () => {
-            formsDiv.style.right = '-500px';
-        });
-    });
-};
-
 function getForms() {
     const forms = document.createElement('div');
     forms.id = 'info-input-sec';
@@ -68,4 +45,4 @@ function getForms() {
     return forms;
 };
 
-export {getForms, addFormFunctionality};
+export default getForms;

@@ -1,23 +1,4 @@
-class TASK {
-    constructor(title, desc, dueDate, priority, status) {
-
-    }
-};
-
-class PROJECT {
-    constructor() {
-        
-    }
-};
-
-function createNewProject() {
-    const form = document.getElementById('info-input-sec');
-    const projectForm = document.getElementById('project-info');
-    const taskForm = document.getElementById('task-info');
-    projectForm.style.display = 'flex';
-    taskForm.style.display = 'none';
-    form.style.right = 0;
-};
+import addNewProject from "./projectAndTaskManager";
 
 function getProjectSection() {
     const projectSection = document.createElement('div');
@@ -35,10 +16,12 @@ function getProjectSection() {
     projectsList.id = 'projects-list';
     
     addProject.addEventListener('click', () => {
-        const project = createNewProject();
+        addNewProject();
     });
-    
+
     projectSection.appendChild(addProject);
+    projectSection.appendChild(projectsList);
+    
     return projectSection;
 };
 
