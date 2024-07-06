@@ -27,9 +27,9 @@ function getForms() {
 
                     <label for="taskPriority" class="label">Task Priority</label>
                     <div id="priorities">
-                        <input type="radio" name="taskPriority" id="taskPriorityH" required> <span id="h">High</span>
-                        <input type="radio" name="taskPriority" id="taskPriorityM"> <span  id="m">Medium</span>
-                        <input type="radio" name="taskPriority" id="taskPriorityL"> <span  id="l">Low</span>
+                        <input type="radio" name="taskPriority" id="taskPriorityH" value="H" required> <span id="h">High</span>
+                        <input type="radio" name="taskPriority" id="taskPriorityM" value="M"> <span  id="m">Medium</span>
+                        <input type="radio" name="taskPriority" id="taskPriorityL" value="L"> <span  id="l">Low</span>
                     </div>
 
                     <label for="taskDate" class="label">Task Due Date:</label>

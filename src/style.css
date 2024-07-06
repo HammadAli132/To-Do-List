@@ -149,7 +149,6 @@ main {
 }
 
 .task {
-    border-left: 3px solid red;
     padding: 10px;
     transition: all .3s;
     border-top-right-radius: 10px;
@@ -215,21 +214,16 @@ main {
     border: none;
     border-radius: 20px;
     padding: 20px;
-    min-height: auto;
     position: absolute;
     top: 0;
-    right: -500px;
+    right: -700px;
     transition: all .5s ease-out;
 }
 
 #project-info, #task-info {
-    display: flex;
+    display: none;
     align-items: start;
     flex-direction: column;
-}
-
-#project-info {
-    display: none;
 }
 
 .form {
@@ -297,4 +291,30 @@ form input[type='color'] {
 
 #l {
     color: green;
+}
+
+#add-task {
+    position: absolute;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary-color);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    transition: all .3s;
+    z-index: 10;
+}
+
+#add-task:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+#add-task > img {
+    height: 100%;
+    width: 100%;
 }

@@ -1,4 +1,4 @@
-import addNewProject from "./projectAndTaskManager";
+import {addNewProject} from "./projectAndTaskManager";
 
 function getProjectSection() {
     const projectSection = document.createElement('div');

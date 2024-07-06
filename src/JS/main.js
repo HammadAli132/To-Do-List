@@ -1,11 +1,15 @@
 import getMenu from "./menu";
-import getForms from "./forms"
+import getTaskSection from "./taskSection";
+import getForms from "./forms";
 
 function loadMain() {
     const main = document.createElement('main');
 
     const menu = getMenu();
     main.appendChild(menu);
+
+    const taskSection = getTaskSection();
+    main.appendChild(taskSection);
 
     const forms = getForms();
     main.appendChild(forms);
