@@ -6,6 +6,7 @@ class TASK {
         this.desc = desc;
         this.dueDate = dueDate;
         this.priority = priority;
+        this.checked = false;
     }
 };
 
@@ -19,7 +20,6 @@ class PROJECT {
 
 let projectEventListenerAdded = false;
 let taskEventListenerAdded = false;
-let updateEventListenerAdded = false;
 let cancelEventListenerAdded = false;
 let taskUpdatingMode = false;
 let projectList = [];
@@ -27,12 +27,15 @@ let index = 0, openedProject, taskIndex = 0;
 
 function cleanTasksSection() {
     const taskSection = document.getElementById('tasks-section');
+    const checklist = document.getElementById('checklist-list');
     while (taskSection.firstChild) {
         taskSection.removeChild(taskSection.firstChild);
     }
     projectList[openedProject].taskArray = projectList[openedProject].taskArray.filter(task => task !== undefined);
     taskIndex = 0;
-    updateEventListenerAdded = false;
+    while (checklist.firstChild) {
+        checklist.removeChild(checklist.firstChild);
+    }
 };
 
 function getTaskCount() {
@@ -52,8 +55,41 @@ function getTaskCreated(task) {
     taskIndex++;
     Task.innerHTML = `
                     <div class="task-title">${task.title}</div>
-                    <div class="task-desc">${task.desc}</div>
-                    <div class="check-box"></div>`;
+                    <div class="task-desc">${task.desc}</div>`;
+
+    const checkBox = document.createElement('div');
+    checkBox.setAttribute('class', 'check-box');
+    checkBox.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (task.checked === false) {
+            task.checked = true;
+            checkBox.classList.add('checked');
+            Task.querySelector('.task-title').classList.add('checked-task');
+            Task.querySelector('.task-desc').classList.add('checked-task');
+            Task.querySelector('.due-date').classList.add('checked-task');
+
+            const checklist = document.getElementById('checklist-list');
+            const checkbar = document.createElement('div');
+            checkbar.setAttribute('class', 'checklist-bar');
+            checkbar.id = `${openedProject}${Task.id}`;
+
+            const checkBarTaskName = document.createElement('div');
+            checkBarTaskName.setAttribute('class', 'project-name');
+            checkBarTaskName.innerText = task.title;
+            checkbar.appendChild(checkBarTaskName);
+            checklist.appendChild(checkbar);
+        }
+        else {
+            task.checked = false;
+            checkBox.classList.remove('checked');
+            Task.querySelector('.task-title').classList.remove('checked-task');
+            Task.querySelector('.task-desc').classList.remove('checked-task');
+            Task.querySelector('.due-date').classList.remove('checked-task');
+            document.getElementById(`${openedProject}${Task.id}`).remove();
+        }
+    });
+
+    Task.appendChild(checkBox);
 
     const taskItems = document.createElement("div");
     taskItems.setAttribute('class', 'task-items');
@@ -67,14 +103,19 @@ function getTaskCreated(task) {
     taskDelete.addEventListener('click', (e) => {
         e.stopPropagation();
         const ID = taskDelete.parentNode.parentNode.id;
-        projectList[openedProject].taskArray[ID] = undefined;
         const tasks = taskGrid.querySelectorAll('.task');
         tasks.forEach(task => {
             if (task.id === ID) {
-                console.log("yes");
                 task.remove(ID);
+                checkBox.classList.remove('checked');
+                Task.querySelector('.task-title').classList.remove('checked-task');
+                Task.querySelector('.task-desc').classList.remove('checked-task');
+                Task.querySelector('.due-date').classList.remove('checked-task');
+                if (projectList[openedProject].taskArray[Task.id].checked === true)
+                    document.getElementById(`${openedProject}${Task.id}`).remove();
             }
         });
+        projectList[openedProject].taskArray[ID] = undefined;
         getTaskCount();
     });
     taskItems.appendChild(taskDelete);
@@ -85,6 +126,23 @@ function getTaskCreated(task) {
         Task.style.cssText = "border-left: 3px solid orange;";
     else 
         Task.style.cssText = "border-left: 3px solid green;";
+    if (task.checked) {
+        checkBox.classList.add('checked');
+        Task.querySelector('.task-title').classList.add('checked-task');
+        Task.querySelector('.task-desc').classList.add('checked-task');
+        Task.querySelector('.due-date').classList.add('checked-task');
+
+        const checklist = document.getElementById('checklist-list');
+        const checkbar = document.createElement('div');
+        checkbar.setAttribute('class', 'checklist-bar');
+        checkbar.id = `${openedProject}${Task.id}`;
+
+        const checkBarTaskName = document.createElement('div');
+        checkBarTaskName.setAttribute('class', 'project-name');
+        checkBarTaskName.innerText = task.title;
+        checkbar.appendChild(checkBarTaskName);
+        checklist.appendChild(checkbar);
+    }
     return Task;
 };
 

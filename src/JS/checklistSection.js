@@ -10,6 +10,7 @@ function getChecklistSection() {
 
     const checklistList = document.createElement('div');
     checklistList.id = 'checklist-list';
+    checklistSection.appendChild(checklistList);
 
     return checklistSection;
 };

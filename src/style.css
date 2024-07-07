@@ -192,7 +192,16 @@ main {
     border-radius: 50%;
 }
 
+.checked-task {
+    text-decoration: line-through;
+    color: var(--secondar-text-color);
+}
+
 .check-box:hover {
+    background: url(./assets/tick.png) center center/cover no-repeat;
+}
+
+.check-box.checked {
     background: url(./assets/tick.png) center center/cover no-repeat;
 }
 
