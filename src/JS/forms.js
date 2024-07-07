@@ -36,7 +36,7 @@ function getForms() {
                     <input type="date" name="taskDate" id="taskDate" required>
 
                     <div class="form-btn">
-                        <input type="submit" class="submit-btn" value="Add Task">
+                        <input type="submit" class="submit-btn" value="Submit">
                         <input type="button" class="cancel-btn" value="Cancel">
                     </div>
                 </form>

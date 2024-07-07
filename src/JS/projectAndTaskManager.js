@@ -1,3 +1,5 @@
+import deleteIcon from "../assets/bin.png";
+
 class TASK {
     constructor(title, desc, dueDate, priority) {
         this.title = title;
@@ -17,16 +19,74 @@ class PROJECT {
 
 let projectEventListenerAdded = false;
 let taskEventListenerAdded = false;
+let updateEventListenerAdded = false;
 let cancelEventListenerAdded = false;
+let taskUpdatingMode = false;
 let projectList = [];
-let index = 0, openedProject;
+let index = 0, openedProject, taskIndex = 0;
 
 function cleanTasksSection() {
     const taskSection = document.getElementById('tasks-section');
     while (taskSection.firstChild) {
         taskSection.removeChild(taskSection.firstChild);
     }
-}
+    projectList[openedProject].taskArray = projectList[openedProject].taskArray.filter(task => task !== undefined);
+    taskIndex = 0;
+    updateEventListenerAdded = false;
+};
+
+function getTaskCount() {
+    let count = 0;
+    projectList[openedProject].taskArray.forEach(task => {
+        if (task !== undefined)
+            count++;
+    });
+    document.querySelectorAll(".count")[openedProject].innerText = `${count}`;
+};
+
+function getTaskCreated(task) {
+    const taskGrid = document.getElementById('task-grid');
+    let Task = document.createElement('div');
+    Task.setAttribute('class', 'task');
+    Task.id = `${taskIndex}`;
+    taskIndex++;
+    Task.innerHTML = `
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-desc">${task.desc}</div>
+                    <div class="check-box"></div>`;
+
+    const taskItems = document.createElement("div");
+    taskItems.setAttribute('class', 'task-items');
+    let dueDate = document.createElement("div");
+    dueDate.setAttribute('class', 'due-date');
+    dueDate.innerText = `Due Date: ${task.dueDate}`;
+    taskItems.appendChild(dueDate);
+    const taskDelete = document.createElement('div');
+    taskDelete.setAttribute('class', 'task-delete');
+    taskDelete.innerHTML = `<img src="${deleteIcon}" height="100%" width="100%">`;
+    taskDelete.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ID = taskDelete.parentNode.parentNode.id;
+        projectList[openedProject].taskArray[ID] = undefined;
+        const tasks = taskGrid.querySelectorAll('.task');
+        tasks.forEach(task => {
+            if (task.id === ID) {
+                console.log("yes");
+                task.remove(ID);
+            }
+        });
+        getTaskCount();
+    });
+    taskItems.appendChild(taskDelete);
+    Task.appendChild(taskItems);
+    if (task.priority === 'H')
+        Task.style.cssText = "border-left: 3px solid red;";
+    else if (task.priority === 'M') 
+        Task.style.cssText = "border-left: 3px solid orange;";
+    else 
+        Task.style.cssText = "border-left: 3px solid green;";
+    return Task;
+};
 
 function addEventListenerToProjectBar(bar, project) {
     const taskSection = document.getElementById("tasks-section");
@@ -42,51 +102,20 @@ function addEventListenerToProjectBar(bar, project) {
 
         const taskGrid = document.createElement('div');
         taskGrid.id = "task-grid";
+        taskSection.appendChild(taskGrid);
         project.taskArray.forEach(task => {
-            const Task = document.createElement('div');
-            Task.setAttribute('class', 'task');
-            Task.innerHTML = `
-                    <div class="task-title">${task.title}</div>
-                    <div class="task-desc">${task.desc}</div>
-                    <div class="check-box"></div>
-                    <div class="task-items">
-                        <div class="due-date">Due Date: ${task.dueDate}</div>
-                        <div class="task-delete"></div>
-                    </div>`;
-            if (task.priority === 'H') 
-                Task.style.cssText = "border-left: 3px solid red;";
-            else if (task.priority === 'M') 
-                Task.style.cssText = "border-left: 3px solid orange;";
-            else 
-                Task.style.cssText = "border-left: 3px solid green;";
+            const Task = getTaskCreated(task);
             taskGrid.appendChild(Task);
         });
-        taskSection.appendChild(taskGrid);
     });
-}
+};
 
 function appendTaskInList(task) {
     const taskGrid = document.getElementById('task-grid');
-    const Task = document.createElement('div');
-    Task.setAttribute('class', 'task');
-    Task.innerHTML = `
-                    <div class="task-title">${task.title}</div>
-                    <div class="task-desc">${task.desc}</div>
-                    <div class="check-box"></div>
-                    <div class="task-items">
-                        <div class="due-date">Due Date: ${task.dueDate}</div>
-                        <div class="task-delete"></div>
-                    </div>`;
-    if (task.priority === 'H') 
-        Task.style.cssText = "border-left: 3px solid red;";
-    else if (task.priority === 'M') 
-        Task.style.cssText = "border-left: 3px solid orange;";
-    else 
-        Task.style.cssText = "border-left: 3px solid green;";
+    const Task = getTaskCreated(task);
     taskGrid.appendChild(Task);
-    console.log(document.querySelectorAll(".count"));
-    document.querySelectorAll(".count")[openedProject].innerText = `${projectList[openedProject].taskArray.length}`;
-}
+    getTaskCount();
+};
 
 function appendProjectInList(object) {
     const htmlProjectList = document.getElementById('projects-list');
@@ -110,7 +139,7 @@ function appendProjectInList(object) {
     addEventListenerToProjectBar(projectBar, object);
 
     htmlProjectList.appendChild(projectBar);
-}
+};
 
 function addNewProject() {
     const form = document.getElementById('info-input-sec');
@@ -148,6 +177,7 @@ function addNewProject() {
 };
 
 function addNewTask() {
+    taskUpdatingMode = false;
     const form = document.getElementById('info-input-sec');
     const taskForm = document.getElementById('task-info');
     const projectForm = document.getElementById('project-info');
@@ -158,6 +188,7 @@ function addNewTask() {
 
     if (!taskEventListenerAdded) {
         taskForm.addEventListener('submit', (e) => {
+            if (taskUpdatingMode) return;
             e.preventDefault();
             const taskName = document.getElementById('taskName');
             const taskDesc = document.getElementById('taskDesc');
@@ -174,7 +205,6 @@ function addNewTask() {
             taskDesc.value = '';
             taskDate.value = '';
             appendTaskInList(task);
-            console.log(projectList);
             form.style.right = '-700px';
         });
         taskEventListenerAdded = true;
