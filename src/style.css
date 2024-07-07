@@ -165,6 +165,7 @@ main {
 .task-title {
     color: var(--primary-text-color);
     padding: 0;
+    max-width: 85%;
 }
 
 .task-desc {

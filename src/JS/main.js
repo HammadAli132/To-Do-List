@@ -1,6 +1,7 @@
 import getMenu from "./menu";
 import getTaskSection from "./taskSection";
 import getForms from "./forms";
+import { loadInitials } from "./projectAndTaskManager";
 
 function loadMain() {
     const main = document.createElement('main');
@@ -15,6 +16,7 @@ function loadMain() {
     main.appendChild(forms);
 
     document.body.appendChild(main);
+    loadInitials();
 };
 
 export default loadMain;

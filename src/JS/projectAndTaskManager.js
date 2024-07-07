@@ -1,4 +1,5 @@
 import deleteIcon from "../assets/bin.png";
+import getData from "./storage";
 
 class TASK {
     constructor(title, desc, dueDate, priority) {
@@ -21,7 +22,6 @@ class PROJECT {
 let projectEventListenerAdded = false;
 let taskEventListenerAdded = false;
 let cancelEventListenerAdded = false;
-let taskUpdatingMode = false;
 let projectList = [];
 let index = 0, openedProject, taskIndex = 0;
 
@@ -36,7 +36,8 @@ function cleanTasksSection() {
     while (checklist.firstChild) {
         checklist.removeChild(checklist.firstChild);
     }
-};
+    localStorage.setItem("data", JSON.stringify(projectList));
+}
 
 function getTaskCount() {
     let count = 0;
@@ -45,7 +46,7 @@ function getTaskCount() {
             count++;
     });
     document.querySelectorAll(".count")[openedProject].innerText = `${count}`;
-};
+}
 
 function getTaskCreated(task) {
     const taskGrid = document.getElementById('task-grid');
@@ -87,6 +88,7 @@ function getTaskCreated(task) {
             Task.querySelector('.due-date').classList.remove('checked-task');
             document.getElementById(`${openedProject}${Task.id}`).remove();
         }
+        localStorage.setItem("data", JSON.stringify(projectList));
     });
 
     Task.appendChild(checkBox);
@@ -102,11 +104,13 @@ function getTaskCreated(task) {
     taskDelete.innerHTML = `<img src="${deleteIcon}" height="100%" width="100%">`;
     taskDelete.addEventListener('click', (e) => {
         e.stopPropagation();
+        let deleted = false;
         const ID = taskDelete.parentNode.parentNode.id;
         const tasks = taskGrid.querySelectorAll('.task');
-        tasks.forEach(task => {
+        tasks.forEach((task, index) => {
             if (task.id === ID) {
-                task.remove(ID);
+                task.remove();
+                deleted = true;
                 checkBox.classList.remove('checked');
                 Task.querySelector('.task-title').classList.remove('checked-task');
                 Task.querySelector('.task-desc').classList.remove('checked-task');
@@ -114,8 +118,12 @@ function getTaskCreated(task) {
                 if (projectList[openedProject].taskArray[Task.id].checked === true)
                     document.getElementById(`${openedProject}${Task.id}`).remove();
             }
+            if (deleted) {
+                task.id = `${index - 1}`;
+            }
         });
-        projectList[openedProject].taskArray[ID] = undefined;
+        projectList[openedProject].taskArray.splice(ID, 1);
+        localStorage.setItem("data", JSON.stringify(projectList));
         getTaskCount();
     });
     taskItems.appendChild(taskDelete);
@@ -144,7 +152,7 @@ function getTaskCreated(task) {
         checklist.appendChild(checkbar);
     }
     return Task;
-};
+}
 
 function addEventListenerToProjectBar(bar, project) {
     const taskSection = document.getElementById("tasks-section");
@@ -165,15 +173,16 @@ function addEventListenerToProjectBar(bar, project) {
             const Task = getTaskCreated(task);
             taskGrid.appendChild(Task);
         });
+        console.log(projectList);
     });
-};
+}
 
 function appendTaskInList(task) {
     const taskGrid = document.getElementById('task-grid');
     const Task = getTaskCreated(task);
     taskGrid.appendChild(Task);
     getTaskCount();
-};
+}
 
 function appendProjectInList(object) {
     const htmlProjectList = document.getElementById('projects-list');
@@ -197,7 +206,7 @@ function appendProjectInList(object) {
     addEventListenerToProjectBar(projectBar, object);
 
     htmlProjectList.appendChild(projectBar);
-};
+}
 
 function addNewProject() {
     const form = document.getElementById('info-input-sec');
@@ -217,25 +226,16 @@ function addNewProject() {
             projectName.value = "";
             projectColor.value = "#000000";
             projectList.push(project);
+            localStorage.setItem("data", JSON.stringify(projectList));
             appendProjectInList(project);
             form.style.right = '-700px';
+            console.log(projectList);
         });
         projectEventListenerAdded = true;
     }
-
-    if (!cancelEventListenerAdded) {
-        const cancelBtns = document.querySelectorAll('.cancel-btn');
-        cancelBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                form.style.right = '-700px';
-            });
-        });
-        cancelEventListenerAdded = true;
-    }
-};
+}
 
 function addNewTask() {
-    taskUpdatingMode = false;
     const form = document.getElementById('info-input-sec');
     const taskForm = document.getElementById('task-info');
     const projectForm = document.getElementById('project-info');
@@ -246,7 +246,6 @@ function addNewTask() {
 
     if (!taskEventListenerAdded) {
         taskForm.addEventListener('submit', (e) => {
-            if (taskUpdatingMode) return;
             e.preventDefault();
             const taskName = document.getElementById('taskName');
             const taskDesc = document.getElementById('taskDesc');
@@ -259,14 +258,40 @@ function addNewTask() {
             });
             const task = new TASK(taskName.value, taskDesc.value, taskDate.value, taskPriority);
             projectList[openedProject].taskArray.push(task);
+            localStorage.setItem("data", JSON.stringify(projectList));
             taskName.value = '';
             taskDesc.value = '';
             taskDate.value = '';
             appendTaskInList(task);
             form.style.right = '-700px';
+            console.log(projectList);
         });
         taskEventListenerAdded = true;
     }
-};
+}
 
-export {addNewProject, addNewTask};
+function loadInitials() {
+    if (localStorage.getItem("data")) {
+        projectList = JSON.parse(localStorage.getItem("data"));
+        projectList.forEach(project => {
+            appendProjectInList(project);    
+        });
+        console.log("Data found");
+    }
+    else {
+        projectList = JSON.parse(getData());
+        localStorage.setItem("data", JSON.stringify(projectList));
+        appendProjectInList(projectList[0]);
+        console.log("Data not found");
+    }
+    // localStorage.clear();
+    const form = document.getElementById('info-input-sec');
+    const cancelBtns = document.querySelectorAll('.cancel-btn');
+    cancelBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            form.style.right = '-700px';
+        });
+    });
+}
+
+export {addNewProject, addNewTask, loadInitials};
